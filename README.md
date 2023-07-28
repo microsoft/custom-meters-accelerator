@@ -75,10 +75,6 @@ The source `/src` directory contains the following Visual Studio projects.
 | [**Services client library**](./src/Services) | Contains the services used by the Customer and Publisher portals, including the POCO classes to orchestrate calls to the marketplace APIs on [client library](https://github.com/microsoft/commercial-marketplace-client-dotnet) / database.|Services |
 | [**Billing Engine project**](./src/MeteredTriggerJob) | WebJob billing engine to submit metered usage. | Billing Engine |
 
-The sample code in this repository runs in the publisher's environment as illustrated below. The metering SDK (.NET class library) and a sample web application to report usage events for subscriptions against those plans that support metering (have the dimensions defined and enabled) and correlate to SaaS Metering and SaaS Service blocks in the below image, respectively.
-
-![Use case](./docs/images/sdk_overview.png)
-
 ## Technology and Versions
 
 This project has been developed using the following technologies and versions:
