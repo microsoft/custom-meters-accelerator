@@ -1,0 +1,117 @@
+﻿@using ManagedApplicationScheduler.Services.Models
+@model ManagedApplicationScheduler.Services.Models.SummarySubscriptionViewModel
+
+@{
+    ViewData["Title"] = "Subscriptions";
+}
+
+<div class="text-center">
+    <div>
+        <br />
+        @if (!Model.IsSuccess && !string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger">
+                <strong>Error!</strong> @Model.ErrorMessage
+            </div>
+        }
+        <div class="card-body">
+            <div class="text-center">
+                <span class="cm-section-heading">Current Metered Plan Scheduled Events</span>
+                <button type="submit" onclick="@("window.location.href='" + @Url.Action("NewSubscription", "Home") + "'");" class="cm-button-default text-right float-right">Add New Subscription</button>
+            </div>
+        </div>
+        <form method="post">
+            <div>
+                <div class="card-body">
+                    <div class="table-responsive mt20">
+                        @if (Model.Subscriptions.Count() > 0)
+                        {
+                            <table id="table" class="table table-bordered dt-responsive table-condensed cm-table mt20" width="100%">
+                                <thead class="cm-table-head">
+                                    <tr>
+                                        <th>Offer</th>
+                                        <th>Managed App Id</th>
+                                        <th>Plan</th>
+                                        <th>Subscription</th>
+                                        <th>ProvisionState</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @for (var i = 0; i < Model.Subscriptions.Count; i++)
+                                    {
+                                        var subscription = Model.Subscriptions[i];
+                                        <tr>
+                                            <td class="text-left">
+                                                @subscription.Product
+                                                @Html.HiddenFor(s => s.Subscriptions[i].id)
+                                            </td>
+                                            <td class="text-left text-nowrap">
+                                                @subscription.AppId
+                                            </td>
+                                               <td class="text-left">
+                                                @subscription.PlanId
+                                            </td>
+                                            <td class="text-left">
+                                                @subscription.Subscription
+                                            </td>
+                                            <td class="text-left">@subscription.ProvisionState</td>
+                                            <td class="text-left">@subscription.SubscriptionStatus</td>
+                                            <td class="text-left cm-ellipsis">
+                                                <div class="nav-item dropdown">
+                                                    <a class="nav-link dropdown cm-link-button" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fa fa-bars"></i></a>
+                                                    <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                                        <a class="dropdown-item cm-dropdown-option" asp-controller="Home" asp-action="EditSubscription" asp-route-subscriptionId="@subscription.id">Edit</a>
+                                                        <a class="dropdown-item cm-dropdown-option" asp-controller="Home" asp-action="DeleteSubscription" asp-route-subscriptionId="@subscription.id" onclick="return confirm('Are you sure?');">Delete</a>
+                                                        @if (subscription.SubscriptionStatus == "Subscribed")
+                                                        {
+                                                            <a class="dropdown-item cm-dropdown-option" asp-controller="Home" asp-action="Unsubscribe" asp-route-subscriptionId="@subscription.id" onclick="return confirm('Are you sure?');">Unsubscribe</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="dropdown-item cm-dropdown-option" asp-controller="Home" asp-action="Subscribe" asp-route-subscriptionId="@subscription.id" onclick="return confirm('Are you sure?');">Subscribe</a>
+                                                        }
+                                                        <a class="dropdown-item cm-dropdown-option" asp-controller="Home" asp-action="SubscriptionDetails" asp-route-id="@subscription.id">View Details</a>
+                                                        <a class="dropdown-item cm-dropdown-option" asp-controller="Scheduler" asp-action="NewScheduler" asp-route-subscriptionId="@subscription.id">Schedule New Task</a>
+                                                        <a class="dropdown-item cm-dropdown-option" asp-controller="Scheduler" asp-action="SubscriptionMeteredDetail" asp-route-subscriptionId="@subscription.id" asp-route-operation="LogDetail">View Metered History</a>
+                                                    </div>
+                                                </div>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                            <br />
+                            <br/>
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+
+                        }
+                        else
+                        {
+                            <div class="cm-panel-default mt40">
+                                <div class="p-3 mr420">
+                                    <p>
+                                        No subscriptions from your customers yet!
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            <!-- Modal -->
+            <div class="modal fade" id="myModal" role="dialog">
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+ 
+</script>
