@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/src/MeteredTriggerJob/appsettings.development.json
+/src/AdminSite/appsettings.development.json

@@ -1,0 +1,96 @@
+﻿@model IEnumerable<ManagedApplicationScheduler.Services.Models.ApplicationConfigurationModel>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+<div class="container">
+    <div class="">
+        <div class="card-body admin-margin">
+            <div class="text-left">
+                <span class="cm-section-heading">Application Config</span>
+            </div>
+            <div id="myModal">
+                <div class="table-responsive mt20">
+                    <table class="table table-bordered dt-responsive cm-table" width="100%" cellspacing="0" id="applicationConfig">
+                        <thead class="cm-table-head">
+                            <tr>
+                                <th>Config Name</th>
+                                <th>Config Value</th>
+                                <th>Config Description</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @{ var i = 0;}
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-left">
+                                        @item.Name
+                                    </td>
+                                    <td class="text-left" width="300px">
+                                        @if (@item.Name.Equals("SMTPPassword") && @item.Value.Length > 5)
+                                        {
+                                            @String.Format("{0}{1}", @item.Value.Substring(0,5), "****************");
+                                        }
+                                        else
+                                        {
+                                            
+                                            @item.Value
+                                        }
+                                    </td>
+                                    <td class="text-left">
+                                        @item.Description
+                                    </td>
+                                    <td class="text-left cm-ellipsis">
+                                        <div class="nav-item dropdown">
+                                            <a class="nav-link dropdown cm-link-button" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-bars"></i></a>
+                                            <div class="dropdown-menu" aria-labelledby="dropdown01">
+                                                <a class="dropdown-item cm-dropdown-option" data-target="#myModal" onclick="ViewAppConfigdetailsById('@item.id')">Edit</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                i++;
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                <hr />
+                <div>
+                     <h2>Application Logs</h2>
+                     <a class="cm-button-default mt0" asp-area="" asp-controller="ApplicationLog" asp-action="Index">View Logs</a>
+                </div>
+                <br />
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function changeValue(){
+        document.getElementById('tempdataLabel').innerHTML="In progress ..."    
+    }
+
+    function ViewAppConfigdetailsById(Id) {
+            $.ajax({
+                type: "Get",
+                url: "ApplicationConfig/ApplicationConfigDetails",
+                data: { Id: Id },
+                contentType: "application/json; charset=utf-8",
+                datatype: "json",
+                success: function (data) {
+                    $('#myModal').html(data);
+                },
+                error: function () {
+                    swal({
+                        title: "Error",
+                        text: "An error has occured, while loading details.",
+                        icon: "error"
+                    });
+                }
+            });
+        }
+
+</script>
+

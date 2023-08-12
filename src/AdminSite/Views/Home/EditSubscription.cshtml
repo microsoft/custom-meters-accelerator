@@ -1,0 +1,72 @@
+﻿@using ManagedApplicationScheduler.Services.Models
+@model ManagedApplicationScheduler.Services.Models.SubscriptionModel
+@{
+    //ViewData["Title"] = "Home";
+}
+
+<div class="container">
+    <form method="post" id="frmSubscriptionEvents" asp-action="EditSubscriptionAction" asp-controller="Home">
+
+        <div>
+            <div class="text-left mt40">
+                <span class="cm-section-heading">Azure Application Subscription Details</span>
+            </div>
+            @if (Model != null && !string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger partner-card-body">
+                    <strong>Error!</strong> Some Error Occurred During Operation!
+                </div>
+            }
+            else
+            {
+                <div class="cm-panel-default mt20">
+                    <dl class="row text-left">
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Managed App ResourceUri ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(s => s.id)
+                            @Html.HiddenFor(s => s.id)
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Publisher ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.TextBoxFor(s => s.Publisher, "",  new { @class = "form-control", required = "required"  })
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Product ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.TextBoxFor(s => s.Product, "",  new { @class = "form-control", required = "required"  })
+                        </dd>
+
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("PlanId ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.TextBoxFor(s => s.PlanId, "",  new { @class = "form-control", required = "required"  })
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Dimension")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.TextBoxFor(s => s.Dimension, "",  new { @class = "form-control", required = "required" })
+                            <span>Pattern: Dim1|Dim2|Dim3</span>
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Version ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.TextBoxFor(s => s.Version, "",  new { @class = "form-control", required = "required"  })
+                        </dd>
+                    </dl>
+                </div>
+                <br />
+                <div class="input-group-append">
+                    <button type="submit" id="btnSubmit" class="btn btn-success" onclick="return confirm('Are you sure?');">Update Subscription</button>
+                </div>
+            }
+        </div>
+    </form>
+</div>
