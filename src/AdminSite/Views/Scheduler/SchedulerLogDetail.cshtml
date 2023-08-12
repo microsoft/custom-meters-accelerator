@@ -1,0 +1,94 @@
+﻿@model ManagedApplicationScheduler.Services.Models.ScheduledTasksModel
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+</head>
+<body>
+
+    <div class="card-body">
+        <div class="modal-header header-bg">
+            <h1><span class="cm-section-heading"> Activity Log</span></h1>
+        </div>
+        <div class="modal-body">
+            <div>
+                <table border=1>
+                    <tr>
+                        <th>Scheduler Task Name</th>
+                        <td> @Html.DisplayFor(model => model.ScheduledTaskName)</td>
+                    </tr>
+                    <tr>
+                        <th>Subscription</th>
+                        <td> @Html.DisplayFor(model => model.ResourceUri)</td>
+                    </tr>
+                    <tr>
+                        <th>Plan</th>
+                        <td> @Html.DisplayFor(model => model.PlanId)</td>
+                    </tr>
+
+                    <tr>
+                        <th>Dimension</th>
+                        <td> @Html.DisplayFor(model => model.Dimension)</td>
+                    </tr>
+                    <tr>
+                        <th>Quantity</th>
+                        <td> @Html.DisplayFor(model => model.Quantity)</td>
+                    </tr>
+
+                    <tr>
+                        <th>Frequency</th>
+                       <td> @Html.DisplayFor(model => model.Frequency)</td>
+                    </tr>
+                    <tr>
+                        <th>First Run Date (UTC)&nbsp;&nbsp; </th>
+                        <td>  
+                             @Html.DisplayFor(model => model.StartDate)
+                       </td>
+                    </tr>
+                    <tr>
+                        <th>Status&nbsp;&nbsp; </th>
+                        <td>
+                            @Html.DisplayFor(model => model.Status)
+                        </td>
+                    </tr>
+
+                </table>
+                <br />
+            </div>
+            <p>
+                This Log will show all the Meter events run for this Managed Application scheduled task.
+            </p>
+
+            <table class="table table-bordered dt-responsive cm-table" width=50%>
+                <thead class="cm-table-head">
+                    <tr>
+                        <th width="10%">Process Date</th>
+                        <th width="10%">Scheduled Task</th>
+                        <th width="10%">PlanId</th>
+                        <th width="10%">Dimension</th>
+                        <th width="10%">Quantity</th>
+                        <th width="10%">Status</th>
+                        <th width="10%">Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in @Model.MeteredUsageResult)
+                    {
+                        <tr>
+                            <td>@log.UsagePostedDate</td>
+                            <td>@log.ScheduledTaskName</td>
+                            <td>@log.PlanId</td>
+                            <td>@log.Dimension</td>
+                            <td>@log.Quantity</td>
+                            <td>@log.Status</td>
+                            <td>@log.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+    
+    </body>

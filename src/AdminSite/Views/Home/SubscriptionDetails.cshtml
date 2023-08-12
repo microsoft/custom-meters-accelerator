@@ -1,0 +1,86 @@
+﻿@using ManagedApplicationScheduler.Services.Models
+@model ManagedApplicationScheduler.Services.Models.SubscriptionModel
+@{
+    //ViewData["Title"] = "Home";
+}
+
+<div class="container">
+    <form method="post">
+
+        <div>
+            <div class="text-left mt40">
+                <span class="cm-section-heading">Azure Application Subscription Details</span>
+            </div>
+            @if (Model != null && !string.IsNullOrEmpty(Model.ErrorMessage))
+            {
+                <div class="alert alert-danger partner-card-body">
+                    <strong>Error!</strong> Some Error Occurred During Operation!
+                </div>
+            }
+            else
+            {
+                <div class="cm-panel-default mt20">
+                    <dl class="row text-left">
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Managed App Subscription ID ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.id)
+                        </dd>
+                    <dt class="col-sm-3 p-2 p10">
+                        @Html.DisplayName("Publisher ")
+                    </dt>
+                    <dd class="col-sm-9 p-2 p10">
+                        @Html.DisplayFor(model => model.Publisher)
+                    </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Product ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.Product)
+                        </dd>
+
+                        <dt class="col-sm-3 p-2 p10">
+                        @Html.DisplayName("Provision State ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.ProvisionState)
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                        @Html.DisplayName("Subscription Status ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.SubscriptionStatus)
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Provision Time ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.ProvisionTime)
+                        </dd>
+                        <dt class="col-sm-3 p-2 p10">
+                        @Html.DisplayName("Resource UsageId ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.ResourceUsageId)
+                        </dd>
+
+                        <dt class="col-sm-3 p-2 p10">
+                        @Html.DisplayName("Dimension")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.Dimension)
+                        </dd>  
+                        <dt class="col-sm-3 p-2 p10">
+                            @Html.DisplayName("Version ")
+                        </dt>
+                        <dd class="col-sm-9 p-2 p10">
+                            @Html.DisplayFor(model => model.Version)
+                        </dd>
+
+                    </dl>
+                </div>
+            }
+        </div>
+    </form>
+</div>

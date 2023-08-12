@@ -1,0 +1,88 @@
+﻿@model ManagedApplicationScheduler.Services.Models.SubscriptionViewModel
+
+@{
+    ViewData["Title"] = "Subscriptions";
+}
+
+<div class="text-center">
+    <div>
+        <br />
+
+            <div>
+                <div class="card-body">
+                    <div class="table-responsive mt20">
+
+                            <table id="table" class="table table-bordered dt-responsive table-condensed cm-table mt20" width="100%">
+                                <thead class="cm-table-head">
+                                    <tr>
+                                        <th>Offer</th>
+                                        <th>Managed App Id</th>
+                                        <th>Plan</th>
+                                        <th>Subscription</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                        <tr>
+                                            <td class="text-left">
+                                    @Model.Product
+                                            </td>
+                                            <td class="text-left text-nowrap">
+                                    @Model.AppId
+                                            </td>
+                                               <td class="text-left">
+                                    @Model.PlanId
+                                            </td>
+                                            <td class="text-left">
+                                    @Model.Subscription
+                                            </td>
+                                <td class="text-left">@Model.ProvisionState</td>
+                                            
+                                        </tr>
+                                </tbody>
+                            </table>
+
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+
+    
+ 
+    <div class="card-body">
+            <p>
+                This Log will show all the Meter events for this Managed subscription.
+            </p>
+
+            <table class="table table-bordered dt-responsive cm-table" width=50%>
+                <thead class="cm-table-head">
+                    <tr>
+                        <th width="10%">Process Date</th>
+                <th width="10%">Scheduled Task</th>
+                <th width="10%">PlanId</th>
+                <th width="10%">Dimension</th>
+                <th width="10%">Quantity</th>
+                <th width="10%">Status</th>
+                <th width="10%">Message</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in @Model.meteringUsageResultModels)
+                    {
+                        <tr>
+
+                            <td>@log.UsagePostedDate</td>
+                            <td>@log.ScheduledTaskName</td>
+                            <td>@log.PlanId</td>
+                            <td>@log.Dimension</td>
+                            <td>@log.Quantity</td>
+                            <td>@log.Status</td>
+                            <td>@log.Message</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
