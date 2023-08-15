@@ -5,18 +5,18 @@ namespace ManagedApplicationScheduler.DataAccess.Context
 {
     public class CosmosDbContext : DbContext
     {
-        private DbContextOptionsBuilder<CosmosDbContext> dbContextOptionsBuilder;
+ 
+        public DbSet<Subscription> Subscription { get; set; } = null!;
+        public DbSet<UsageResult> UsageResult { get; set; } = null!;
+        public DbSet<ScheduledTasks> ScheduledTasks { get; set; } = null!;
+        public DbSet<ApplicationLog> ApplicationLog { get; set; } = null!;
 
-        public DbSet<Subscription> Subscription { get; set; }
-        public DbSet<UsageResult> UsageResult { get; set; }
-        public DbSet<ScheduledTasks> ScheduledTasks { get; set; }
-        public DbSet<ApplicationLog> ApplicationLog { get; set; }
-
-        public DbSet<ApplicationConfiguration> ApplicationConfiguration { get; set; }
+        public DbSet<ApplicationConfiguration> ApplicationConfiguration { get; set; } = null!;
 
         public CosmosDbContext(DbContextOptions<CosmosDbContext> options)
             : base(options)
         {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

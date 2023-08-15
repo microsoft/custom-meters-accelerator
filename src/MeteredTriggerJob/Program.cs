@@ -13,14 +13,13 @@ namespace ManagedApplicationScheduler.MeteredTriggerJob;
 
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
 
         Console.WriteLine($"MeteredExecutor Webjob Started at: {DateTime.Now}");
 
         IConfiguration configuration = new ConfigurationBuilder()
             .AddEnvironmentVariables()
-           // .AddJsonFile("appsettings.json")
             .Build();
 
         var config = new ManagedAppClientConfiguration()
@@ -54,7 +53,7 @@ class Program
             .AddSingleton<Executor, Executor>()
             .BuildServiceProvider();
 
-        services
+       _= services
             .GetService<Executor>()
             .ExecuteAsync();
         Console.WriteLine($"MeteredExecutor Webjob Ended at: {DateTime.Now}");

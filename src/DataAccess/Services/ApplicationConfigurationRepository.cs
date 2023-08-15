@@ -37,7 +37,7 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ApplicationConfiguration Get(string id)
+        public ApplicationConfiguration? Get(string id)
         {
             return this.context.ApplicationConfiguration.Where(s => s.id == id).FirstOrDefault();
         }
@@ -54,11 +54,11 @@ namespace ManagedApplicationScheduler.DataAccess.Services
 
         }
 
-        public string GetValueByName(string name)
+        public string? GetValueByName(string name)
         {
 
             var config = context.ApplicationConfiguration.Where(s => s.Name == name).FirstOrDefault();
-            return config.Value;
+            return config?.Value;
         }
 
         public void Update(ApplicationConfiguration entity)

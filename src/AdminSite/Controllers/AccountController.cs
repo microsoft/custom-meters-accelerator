@@ -15,11 +15,11 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <summary>
         /// The SignIn.
         /// </summary>
-        /// <param name="returnUrl">The returnUrl<see cref="string" />.</param>
         /// <returns>
         /// The <see cref="IActionResult" />.
         /// </returns>
-        public IActionResult SignIn(string returnUrl)
+        [HttpGet]
+        public IActionResult SignIn()
         {
             return this.Challenge(new AuthenticationProperties { RedirectUri = "/" }, OpenIdConnectDefaults.AuthenticationScheme);
         }
@@ -30,6 +30,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <returns>
         /// The <see cref="IActionResult" />.
         /// </returns>
+        [HttpGet]
         public new SignOutResult SignOut()
         {
             return this.SignOut(
@@ -47,9 +48,10 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <returns>
         /// The <see cref="IActionResult" />.
         /// </returns>
+        [HttpGet]
         public IActionResult SignedOut() => this.View();
-
-        public IActionResult AccessDenied(string returnUrl)
+        [HttpGet]
+        public IActionResult AccessDenied()
         {
             return this.View("Error");
         }

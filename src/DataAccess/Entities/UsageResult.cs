@@ -10,14 +10,14 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <summary>
         /// Gets or sets the id.
         /// </summary>
-        public string id { get; set; }
+        public string? id { get; set; }
         /// <summary>
         /// Gets or sets the status.
         /// </summary>
         /// <value>
         /// The status.
         /// </value>
-        public string Status { get; set; }
+        public string? Status { get; set; }
 
         /// <summary>
         /// Gets or sets the usage posted date.
@@ -33,7 +33,7 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <value>
         /// The usage event identifier.
         /// </value>
-        public string UsageEventId { get; set; }
+        public string? UsageEventId { get; set; }
 
         /// <summary>
         /// Gets or sets the message time.
@@ -49,7 +49,7 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <value>
         /// The resource identifier.
         /// </value>
-        public string ResourceId { get; set; }
+        public string? ResourceId { get; set; }
 
         /// <summary>
         /// Gets or sets the quantity.
@@ -65,7 +65,7 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <value>
         /// The dimension.
         /// </value>
-        public string Dimension { get; set; }
+        public string? Dimension { get; set; }
 
         /// <summary>
         /// Gets or sets the plan identifier.
@@ -73,7 +73,7 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <value>
         /// The plan identifier.
         /// </value>
-        public string PlanId { get; set; }
+        public string? PlanId { get; set; }
 
         /// <summary>
         /// Gets or sets the ScheduledTaskId.
@@ -81,13 +81,13 @@ namespace ManagedApplicationScheduler.DataAccess.Entities
         /// <value>
         /// The status.
         /// </value>
-        public string ScheduledTaskName { get; set; }
+        public string? ScheduledTaskName { get; set; }
 
 
-        public string PartitionKey { get; set; }
+        public string? PartitionKey { get; set; }
 
-        public string ResourceUri { get; set; }
+        public string? ResourceUri { get; set; }
 
-        public string Message { get; set; }
+        public string?  Message { get; set; }
     }
 }

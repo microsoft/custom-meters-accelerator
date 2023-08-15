@@ -30,17 +30,9 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// </summary>
         private readonly ILogger<HomeController> logger;
 
-#pragma warning disable CS0169 // The field 'HomeController.loggerFactory' is never used
-        private readonly ILoggerFactory loggerFactory;
-#pragma warning restore CS0169 // The field 'HomeController.loggerFactory' is never used
-
-        private SchedulerService schedulerService;
-        private SubscriptionService subscriptionService;
-        private ApplicationLogService applicationLogService;
-#pragma warning disable CS0169 // The field 'HomeController.managedApiClientConfiguration' is never used
-        private ManagedAppClientConfiguration managedApiClientConfiguration;
-#pragma warning restore CS0169 // The field 'HomeController.managedApiClientConfiguration' is never used
-
+        private readonly SchedulerService schedulerService;
+        private readonly SubscriptionService subscriptionService;
+        private readonly ApplicationLogService applicationLogService;
 
         public HomeController(ILogger<HomeController> logger, ISubscriptionsRepository subscriptionsRepository, ISchedulerTasksRepository schedulerTasksRepository, IApplicationLogRepository applicationLogRepository)
         {
@@ -54,19 +46,17 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// Indexes this instance.
         /// </summary>
         /// <returns> The <see cref="IActionResult" />.</returns>
+        [HttpGet]
         public IActionResult Index()
         {
             this.logger.LogInformation("Home Controller / Index ");
             try
             {
-                // var userId = this.userService.AddUser(this.GetCurrentUserDetail());
-
                 return this.View();
             }
-            catch (Exception ex)
+            catch 
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-                return this.View("Error", ex);
+                throw;
             }
         }
 
@@ -75,10 +65,11 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// </summary>
         /// <returns> The <see cref="IActionResult" />.</returns>
         [Authorize]
+        [HttpGet]
         public IActionResult Subscriptions()
         {
-            this.logger.LogInformation("Home Controller / Subscriptions ");
-            SummarySubscriptionViewModel summarySubscription = new SummarySubscriptionViewModel();
+            this.logger.LogInformation("Home Controller / Subscriptions");
+            SummarySubscriptionViewModel summarySubscription = new();
 
             try
             {
@@ -97,10 +88,9 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
 
 
             }
-            catch (Exception ex)
+            catch 
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-                summarySubscription.ErrorMessage = ex.Message;
+                throw;
 
             }
 
@@ -115,11 +105,12 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// Subscription log detail.
         /// </returns>
         [Authorize]
+        [HttpGet]
         public IActionResult SubscriptionDetails(string id)
         {
             var subscriptionDetail = new SubscriptionModel();
 
-            this.logger.LogInformation("Home Controller / SubscriptionLogDetail : subscriptionId: {0}", JsonSerializer.Serialize(id));
+            this.logger.LogInformation("Home Controller / SubscriptionLogDetail : subscriptionId: {Id}", JsonSerializer.Serialize(id));
 
             try
             {
@@ -139,8 +130,8 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-                subscriptionDetail.ErrorMessage = ex.Message;
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                throw;
 
             }
 
@@ -155,12 +146,14 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// The <see cref="IActionResult" />.
         /// </returns>
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [HttpGet]
         public IActionResult Error()
         {
             var exceptionDetail = this.HttpContext.Features.Get<IExceptionHandlerFeature>();
             return this.View(exceptionDetail?.Error);
         }
         [Authorize]
+        [HttpGet]
         public ActionResult NewSubscription()
         {
             var subscriptionDetail = new SubscriptionModel();
@@ -184,8 +177,8 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-                subscriptionDetail.ErrorMessage = ex.Message;
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                throw;
 
             }
 
@@ -195,9 +188,13 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         [Authorize]
         // POST: Subscription/Create
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public ActionResult NewSubscriptionAction(SubscriptionModel subscription)
         {
-
+            if(subscription ==null)
+            {
+                throw new ArgumentNullException(nameof(subscription));
+            }
             var subscriptionDetail = new SubscriptionModel();
 
             this.logger.LogInformation("Home Controller / Add New Subscription");
@@ -212,7 +209,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                     {
                         subscription.SubscriptionStatus = "Subscribed";
                         subscription.ProvisionState = "Succeeded";
-                        subscription.id = subscription.id.Replace("/", "|");
+                        subscription.id = subscription.id.Replace("/", "|",StringComparison.OrdinalIgnoreCase);
 
                         this.subscriptionService.SaveSubscription(subscription);
                         this.applicationLogService.AddApplicationLog($"Completed Saving new Subscription Id: {HttpUtility.HtmlEncode(subscription.id)}");
@@ -229,9 +226,9 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
                 this.applicationLogService.AddApplicationLog($"Error during Saving new Subscription with Id {HttpUtility.HtmlEncode(subscription.id)} to Db: {ex.Message}");
-                subscriptionDetail.ErrorMessage = ex.Message;
+                throw;
 
             }
 
@@ -239,6 +236,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             return this.View(subscriptionDetail);
         }
         [Authorize]
+        [HttpGet]
         public ActionResult EditSubscription(string subscriptionId)
         {
 
@@ -265,13 +263,14 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                throw;
             }
             return this.RedirectToAction("Subscriptions");
         }
         [Authorize]
         [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public ActionResult EditSubscriptionAction(SubscriptionModel subscription)
         {
             this.logger.LogInformation("Home Controller / Edit Subscription Action");
@@ -285,7 +284,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                     if (ModelState.IsValid)
                     {
                         this.subscriptionService.UpdateSubscription(subscription);
-                        this.applicationLogService.AddApplicationLog($"Completed Saving  Subscription Id: {HttpUtility.HtmlEncode(subscription.id)}");
+                        this.applicationLogService.AddApplicationLog($"Completed Saving  Subscription Id: {HttpUtility.HtmlEncode(subscription?.id)}");
                     }
 
                 }
@@ -298,15 +297,20 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
-                this.applicationLogService.AddApplicationLog($"Error during Saving  Subscription with Id {HttpUtility.HtmlEncode(subscription.id)} to Db: {ex.Message}");
-
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                this.applicationLogService.AddApplicationLog($"Error during Saving  Subscription with Id {HttpUtility.HtmlEncode(subscription?.id)} to Db: {ex.Message}");
+                throw;
             }
             return this.RedirectToAction("Subscriptions");
         }
         [Authorize]
+        [HttpGet]
         public ActionResult DeleteSubscription(string subscriptionId)
         {
+            if (subscriptionId == null)
+            {
+                throw new ArgumentNullException(nameof(subscriptionId));
+            }    
             this.logger.LogInformation("Home Controller / Delete Subscription Action");
             this.applicationLogService.AddApplicationLog($"Start Deleting Subscription from Db: {HttpUtility.HtmlEncode(subscriptionId)}");
             try
@@ -317,7 +321,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                     this.TempData["ShowWelcomeScreen"] = "True";
                     if (ModelState.IsValid)
                     {
-                        var schedulerTasks = this.schedulerService.GetSchedulersTasksBySubscription(subscriptionId.Replace("|", "/"));
+                        var schedulerTasks = this.schedulerService.GetSchedulersTasksBySubscription(subscriptionId.Replace("|", "/", StringComparison.OrdinalIgnoreCase));
                         if (schedulerTasks.Count > 0)
                         {
                             this.subscriptionService.UpdateSubscriptionStatus(subscriptionId, "Unsubscribed");
@@ -341,14 +345,16 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
                 this.applicationLogService.AddApplicationLog($"Error during deleting  Subscription with Id {HttpUtility.HtmlEncode(subscriptionId)} to Db: {ex.Message}");
+                throw;
 
             }
             return this.RedirectToAction(nameof(this.Subscriptions));
 
         }
         [Authorize]
+        [HttpGet]
         public ActionResult Unsubscribe(string subscriptionId)
         {
             this.logger.LogInformation("Home Controller / Unsubscribe Subscription Action");
@@ -375,13 +381,14 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
                 this.applicationLogService.AddApplicationLog($"Error during unsubscribe  Subscription with Id {HttpUtility.HtmlEncode(subscriptionId)} to Db: {ex.Message}");
-
+                throw;
             }
             return this.RedirectToAction(nameof(this.Subscriptions));
         }
         [Authorize]
+        [HttpGet]
         public ActionResult Subscribe(string subscriptionId)
         {
             this.logger.LogInformation("Home Controller / Subscribe Subscription Action");
@@ -409,13 +416,13 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
                 this.applicationLogService.AddApplicationLog($"Error during subscribe  Subscription with Id {HttpUtility.HtmlEncode(subscriptionId)} to Db: {ex.Message}");
-
+                throw;
             }
             return this.RedirectToAction(nameof(this.Subscriptions));
         }
-
+        [HttpGet]
         public IActionResult Privacy()
         {
             return this.View();

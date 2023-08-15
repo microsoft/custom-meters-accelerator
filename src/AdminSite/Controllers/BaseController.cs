@@ -16,20 +16,16 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
     public class BaseController : Controller
     {
     
-        private KnownUsersModel knownUsersModel;
-        /// <summary>
-        /// Initializes a new instance of the <see cref="BaseController"/> class.
-        /// </summary>
-        public BaseController()
-        {
-        }
+#pragma warning disable CS0649 // Field 'BaseController.knownUsersModel' is never assigned to, and will always have its default value null
+        private readonly KnownUsersModel knownUsersModel;
+#pragma warning restore CS0649 // Field 'BaseController.knownUsersModel' is never assigned to, and will always have its default value null
         /// <summary>
         /// Gets Current Logged in User Email Address.
         /// </summary>
         /// <value>
         /// The current user email address.
         /// </value>
-        public string CurrentUserEmailAddress
+        private string CurrentUserEmailAddress
         {
             get
             {
@@ -37,36 +33,6 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
         }
 
-        /// <summary>
-        /// Gets Current Logged in User Name.
-        /// </summary>
-        /// <value>
-        /// The name of the current user.
-        /// </value>
-        public string CurrentUserName
-        {
-            get
-            {
-                return HttpContext?.User?.Claims?.FirstOrDefault(s => s.Type == ClaimConstants.CLAIM_NAME)?.Value ?? string.Empty;
-            }
-        }
-
-        /// <summary>
-        /// Get Current Logged in User Email Address.
-        /// </summary>
-        /// <returns> Current Logged User Email.</returns>
-        public PartnerDetailViewModel GetCurrentUserDetail()
-        {
-            if (HttpContext?.User?.Identity?.IsAuthenticated == true)
-            {
-                PartnerDetailViewModel partnerDetail = new PartnerDetailViewModel();
-                partnerDetail.FullName = this.CurrentUserName;
-                partnerDetail.EmailAddress = this.CurrentUserEmailAddress;
-                return partnerDetail;
-            }
-
-            return new PartnerDetailViewModel();
-        }
 
         /// <summary>
         /// Checks the authentication.
@@ -74,6 +40,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <returns>
         /// Check authentication.
         /// </returns>
+        [HttpGet]
         public IActionResult CheckAuthentication()
         {
             
@@ -84,7 +51,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             else
             { 
-                if(this.knownUsersModel.KnownUsers.Contains(this.CurrentUserEmailAddress))
+                if(this.knownUsersModel.KnownUsers.Contains(this.CurrentUserEmailAddress,System.StringComparison.OrdinalIgnoreCase))
                 {
                     return this.RedirectToAction("Index", "Home", new { });
                 }

@@ -10,7 +10,7 @@ namespace ManagedApplicationScheduler.DataAccess.Contracts
     public interface IApplicationLogRepository
     {
         IEnumerable<ApplicationLog> GetAll();
-        ApplicationLog Get(string id);
+        ApplicationLog? Get(string id);
         int Save(ApplicationLog entity);
         void Update(ApplicationLog entity);
         void Remove(ApplicationLog entity);

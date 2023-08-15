@@ -7,7 +7,7 @@ namespace ManagedApplicationScheduler.AdminSite;
 /// <summary>
 /// Program.
 /// </summary>
-public class Program
+public  class Program
 {
     /// <summary>
     /// Defines the entry point of the application.
@@ -16,9 +16,9 @@ public class Program
     public static void Main(string[] args)
     {
         CreateHostBuilder(args).Build().Run();
-        var loggerFactory = LoggerFactory.Create(builder =>
+        using var loggerFactory = LoggerFactory.Create(builder =>
         {
-            builder
+             builder
                 .AddDebug()
                 .AddConsole();
         });

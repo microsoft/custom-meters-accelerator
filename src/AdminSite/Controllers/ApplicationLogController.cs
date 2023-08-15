@@ -18,8 +18,8 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
     {
         private readonly ILogger<ApplicationLogController> logger;
 
-        private ApplicationLogService appLogService;
-                
+        private readonly ApplicationLogService appLogService;
+
 
         private readonly IApplicationLogRepository appLogRepository;
 
@@ -29,6 +29,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             this.logger = logger;
             appLogService = new ApplicationLogService(this.appLogRepository);
         }
+        [HttpGet]
         public IActionResult Index()
         {
             this.logger.LogInformation("Application Log Controller / Index");
@@ -40,12 +41,11 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError($"Message:{ex.Message} :: {ex.InnerException}");
-                return this.View("Error", ex);
+                this.logger.LogError("Message:{Message} :: {InnerException}", ex.Message, ex.InnerException);
+                throw;
             }
         }
 
-
     }
-
 }
+

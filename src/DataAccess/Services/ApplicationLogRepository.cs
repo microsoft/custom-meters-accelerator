@@ -37,7 +37,7 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ApplicationLog Get(string id)
+        public ApplicationLog? Get(string id)
         {
             return this.context.ApplicationLog.Where(s => s.id == id).FirstOrDefault();
         }
