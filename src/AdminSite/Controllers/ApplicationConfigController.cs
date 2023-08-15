@@ -20,20 +20,20 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
     [ServiceFilter(typeof(KnownUserAttribute))]
     public class ApplicationConfigController : BaseController
     {
-        private readonly ILogger<ApplicationConfigController> logger;
+
         private readonly ApplicationConfigurationService appConfigService;
-        private ApplicationLogService applicationLogService;
+        private readonly ApplicationLogService applicationLogService;
         /// <summary>
         /// Move to a new controller?
         /// </summary>
 
 
         public ApplicationConfigController(
-            IApplicationConfigurationRepository applicationConfigurationRepository,  ILogger<ApplicationConfigController> logger, IApplicationLogRepository applicationLogRepository)
+            IApplicationConfigurationRepository applicationConfigurationRepository,   IApplicationLogRepository applicationLogRepository)
         {
             this.appConfigService = new ApplicationConfigurationService(applicationConfigurationRepository);
             this.applicationLogService = new ApplicationLogService(applicationLogRepository);
-            this.logger = logger;
+           
         }
 
         /// <summary>
@@ -41,6 +41,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// </summary>
         /// <returns>return All Application Config.</returns>
         [ServiceFilter(typeof(ExceptionHandlerAttribute))]
+        [HttpGet]
         public IActionResult Index()
         {
             var getAllAppConfigData = this.appConfigService.GetAllConfig();
@@ -55,6 +56,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <returns>
         /// return an Application Config item.
         /// </returns>
+        [HttpGet]
         public IActionResult ApplicationConfigDetails(string id)
         {
             var applicationConfiguration = this.appConfigService.GetById(id);

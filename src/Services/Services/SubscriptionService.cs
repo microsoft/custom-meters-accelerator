@@ -19,8 +19,7 @@ public class SubscriptionService
     /// <summary>
     /// The subscription repository.
     /// </summary>
-    private ISubscriptionsRepository subscriptionRepository;
-    private SchedulerService schedulerService;
+    private readonly ISubscriptionsRepository subscriptionRepository;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SubscriptionService"/> class.
@@ -36,18 +35,20 @@ public class SubscriptionService
 
     public int SaveSubscription(SubscriptionModel subscription)
     {
-        var entity = new Subscription();
-        entity.PlanId = subscription.PlanId;
-        entity.Product = subscription.Product;
-        entity.ProvisionState = subscription.ProvisionState;
-        entity.ProvisionTime = subscription.ProvisionTime;
-        entity.Publisher = subscription.Publisher;
-        entity.ResourceUsageId = subscription.ResourceUsageId;
-        entity.id = subscription.id;
-        entity.PartitionKey = subscription.id;
-        entity.SubscriptionStatus = subscription.SubscriptionStatus;
-        entity.Version = subscription.Version;
-        entity.Dimension = subscription.Dimension;
+        var entity = new Subscription
+        {
+            PlanId = subscription.PlanId,
+            Product = subscription.Product,
+            ProvisionState = subscription.ProvisionState,
+            ProvisionTime = subscription.ProvisionTime,
+            Publisher = subscription.Publisher,
+            ResourceUsageId = subscription.ResourceUsageId,
+            id = subscription.id,
+            PartitionKey = subscription.id,
+            SubscriptionStatus = subscription.SubscriptionStatus,
+            Version = subscription.Version,
+            Dimension = subscription.Dimension
+        };
 
         return this.subscriptionRepository.Save(entity);
 
@@ -122,17 +123,19 @@ public class SubscriptionService
         var entities = this.subscriptionRepository.GetAll();
         foreach (Subscription entity in entities)
         {
-            var subscriptionModel = new SubscriptionModel();
-            subscriptionModel.PlanId = entity.PlanId;
-            subscriptionModel.Product = entity.Product;
-            subscriptionModel.ProvisionState = entity.ProvisionState;
-            subscriptionModel.ProvisionTime = entity.ProvisionTime;
-            subscriptionModel.Publisher = entity.Publisher;
-            subscriptionModel.ResourceUsageId = entity.ResourceUsageId;
-            subscriptionModel.id = entity.id;
-            subscriptionModel.SubscriptionStatus = entity.SubscriptionStatus;
-            subscriptionModel.Version = entity.Version;
-            subscriptionModel.Dimension = entity.Dimension;
+            var subscriptionModel = new SubscriptionModel
+            {
+                PlanId = entity.PlanId,
+                Product = entity.Product,
+                ProvisionState = entity.ProvisionState,
+                ProvisionTime = entity.ProvisionTime,
+                Publisher = entity.Publisher,
+                ResourceUsageId = entity.ResourceUsageId,
+                id = entity.id,
+                SubscriptionStatus = entity.SubscriptionStatus,
+                Version = entity.Version,
+                Dimension = entity.Dimension
+            };
             subscriptions.Add(subscriptionModel);
         }
 
@@ -162,7 +165,7 @@ public class SubscriptionService
 
     public SubscriptionViewModel GetSubscriptionsViewById(string subscriptionId)
     {
-        var subscriptions = new List<SubscriptionViewModel>();
+
         var sub = this.subscriptionRepository.Get(subscriptionId);
 
         return new SubscriptionViewModel
@@ -187,17 +190,19 @@ public class SubscriptionService
 
         foreach (Subscription entity in entities)
         {
-            var subscriptionModel = new SubscriptionModel();
-            subscriptionModel.PlanId = entity.PlanId;
-            subscriptionModel.Product = entity.Product;
-            subscriptionModel.ProvisionState = entity.ProvisionState;
-            subscriptionModel.ProvisionTime = entity.ProvisionTime;
-            subscriptionModel.Publisher = entity.Publisher;
-            subscriptionModel.ResourceUsageId = entity.ResourceUsageId;
-            subscriptionModel.id = entity.id;
-            subscriptionModel.SubscriptionStatus = entity.SubscriptionStatus;
-            subscriptionModel.Version = entity.Version;
-            subscriptionModel.Dimension = entity.Dimension;
+            var subscriptionModel = new SubscriptionModel
+            {
+                PlanId = entity.PlanId,
+                Product = entity.Product,
+                ProvisionState = entity.ProvisionState,
+                ProvisionTime = entity.ProvisionTime,
+                Publisher = entity.Publisher,
+                ResourceUsageId = entity.ResourceUsageId,
+                id = entity.id,
+                SubscriptionStatus = entity.SubscriptionStatus,
+                Version = entity.Version,
+                Dimension = entity.Dimension
+            };
             subscriptions.Add(subscriptionModel);
         }
 

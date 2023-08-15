@@ -10,10 +10,10 @@ namespace ManagedApplicationScheduler.DataAccess.Contracts
     public interface IApplicationConfigurationRepository
     {
         IEnumerable<ApplicationConfiguration> GetAll();
-        ApplicationConfiguration Get(string id);
+        ApplicationConfiguration? Get(string id);
         int Save(ApplicationConfiguration entity);
         void Update(ApplicationConfiguration entity);
         void Remove(ApplicationConfiguration entity);
-        string GetValueByName(string name);
+        string? GetValueByName(string name);
     }
 }

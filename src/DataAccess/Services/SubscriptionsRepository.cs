@@ -12,10 +12,7 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         private readonly CosmosDbContext context;
 
-        /// <summary>
-        /// The disposed.
-        /// </summary>
-        private bool disposed = false;
+
 
 
         public SubscriptionsRepository(CosmosDbContext context)
@@ -43,7 +40,7 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Subscription Get(string id)
+        public Subscription? Get(string id)
         {
             return context.Subscription.Where(s => s.id == id).ToList().FirstOrDefault();
         }

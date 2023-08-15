@@ -26,25 +26,15 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <summary>
         /// the subscription service
         /// </summary>
-        private SubscriptionService subscriptionService;
+        private readonly SubscriptionService subscriptionService;
 
-        private SchedulerService schedulerService;
+        private readonly SchedulerService schedulerService;
 
-        private UsageResultService usageResultService;
+        private readonly UsageResultService usageResultService;
 
-        private ApplicationLogService applicationLogService;
+        private readonly ApplicationLogService applicationLogService;
 
         private readonly ILogger<SchedulerController> logger;
-
-#pragma warning disable CS0169 // The field 'SchedulerController.loggerFactory' is never used
-        private readonly ILoggerFactory loggerFactory;
-#pragma warning restore CS0169 // The field 'SchedulerController.loggerFactory' is never used
-
-
-
-
-
-        /// <summary>
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PlansController" /> class.
@@ -73,6 +63,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// Indexes this instance.
         /// </summary>
         /// <returns>return All subscription.</returns>
+        [HttpGet]
         public IActionResult Index()
         {
             var data = new List<ScheduledTasksModel>();
@@ -93,12 +84,13 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                throw;
             }
             return this.View(data);
 
         }
-
+        [HttpGet]
         public IActionResult NewScheduler(string id)
         {
 
@@ -108,22 +100,24 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                 this.TempData["ShowWelcomeScreen"] = "True";
                 try
                 {
-                    SchedulerUsageViewModel schedulerUsageViewModel = new SchedulerUsageViewModel();
+                    SchedulerUsageViewModel schedulerUsageViewModel = new ();
 
                     var allActiveMeteredSubscriptions = this.subscriptionService.GetActiveSubscriptionsWithMeteredPlan();
 
                     // Create Frequency Dropdown list
-                    List<SelectListItem> SchedulerFrequencyList = new List<SelectListItem>();
-                    SchedulerFrequencyList.Add(new SelectListItem()
+                    List<SelectListItem> SchedulerFrequencyList = new()
                     {
-                        Text = "OneTime",
-                        Value = SchedulerFrequencyEnum.OneTime.ToString(),
-                    });
+                        new SelectListItem()
+                        {
+                            Text = "OneTime",
+                            Value = SchedulerFrequencyEnum.OneTime.ToString(),
+                        }
+                    };
 
 
                     // Create Subscription Dropdown list
-                    List<SelectListItem> SubscriptionList = new List<SelectListItem>();
-                    List<SelectListItem> DimensionsList = new List<SelectListItem>();
+                    List<SelectListItem> SubscriptionList = new ();
+                    List<SelectListItem> DimensionsList = new();
                     foreach (var item in allActiveMeteredSubscriptions)
                     {
                         var sub = item.id.Split("|");
@@ -158,8 +152,8 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                 }
                 catch (Exception ex)
                 {
-                    this.logger.LogError(ex, ex.Message);
-                    return this.View("Error", ex);
+                    this.logger.LogError("{Message}",ex.Message);
+                    throw;
                 }
             }
             else
@@ -171,20 +165,24 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         }
 
 
-
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
         public IActionResult AddNewScheduledTrigger(SchedulerUsageViewModel schedulerUsageViewModel)
         {
-
+            if (schedulerUsageViewModel == null)
+            {
+                throw new ArgumentNullException(nameof(schedulerUsageViewModel));
+            }
             try
             {
                 this.applicationLogService.AddApplicationLog($"Start Adding new Task : {JsonSerializer.Serialize(schedulerUsageViewModel)}");
                 var sub = this.subscriptionService.GetSubscriptionByID(schedulerUsageViewModel.SelectedSubscription);
-                ScheduledTasksModel schedulerManagement = new ScheduledTasksModel()
+                ScheduledTasksModel schedulerManagement = new()
                 {
                     id = Guid.NewGuid().ToString(),
                     Frequency = schedulerUsageViewModel.SelectedSchedulerFrequency,
                     ScheduledTaskName = schedulerUsageViewModel.SchedulerName,
-                    ResourceUri = schedulerUsageViewModel.SelectedSubscription.Replace("|", "/"),
+                    ResourceUri = schedulerUsageViewModel.SelectedSubscription.Replace("|", "/", StringComparison.OrdinalIgnoreCase),
                     //PlanId = selectedDimension.PlanId,
                     Dimension = schedulerUsageViewModel.SelectedDimension,
                     Quantity = Convert.ToDouble(schedulerUsageViewModel.Quantity),
@@ -199,14 +197,11 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, ex.Message);
+                this.logger.LogError("{Message}", ex.Message);
                 this.applicationLogService.AddApplicationLog($"Error during Saving Task with Name {HttpUtility.HtmlEncode(schedulerUsageViewModel.SchedulerName)} to Db: {ex.Message}");
-                return this.View("Error", ex);
+                throw;
             }
 
-#pragma warning disable CS0162 // Unreachable code detected
-            return this.View();
-#pragma warning restore CS0162 // Unreachable code detected
         }
 
         /// <summary>
@@ -215,10 +210,10 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
         /// <param id="schedule Id">The plan gu identifier.</param>
         /// <returns>
         /// return All subscription.
-
+        [HttpGet]
         public IActionResult DeleteSchedulerItem(string id)
         {
-            this.logger.LogInformation($"Scheduler Controller / Remove Schedule Item Details:  Id {HttpUtility.HtmlEncode(id)}");
+            this.logger.LogInformation("Scheduler Controller / Remove Schedule Item Details:  Id {Id}", HttpUtility.HtmlEncode(id));
             this.applicationLogService.AddApplicationLog($"Start Deleting Task with Id : {HttpUtility.HtmlEncode(id)}");
             try
             {
@@ -228,21 +223,17 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError(ex, ex.Message);
+                this.logger.LogError("{Message}", ex.Message);
                 this.applicationLogService.AddApplicationLog($"Error during Saving Task with ID {HttpUtility.HtmlEncode(id)} to Db: {ex.Message}");
-
-                return this.PartialView("Error", ex);
+                throw;
             }
 
-#pragma warning disable CS0162 // Unreachable code detected
-            return this.View();
-#pragma warning restore CS0162 // Unreachable code detected
         }
-
+        [HttpGet]
         public IActionResult SchedulerLogDetail(string id)
         {
             var task = new ScheduledTasksModel();
-            this.logger.LogInformation("Scheduler Controller / SubscriptionLogDetail : subscriptionId: {0}", JsonSerializer.Serialize(id));
+            this.logger.LogInformation("Scheduler Controller / SubscriptionLogDetail : subscriptionId: {Id}", JsonSerializer.Serialize(id));
             try
             {
                 if (this.User.Identity.IsAuthenticated)
@@ -258,16 +249,23 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
+                throw;
             }
             return this.View(task);
         }
-
+        [HttpGet]
         public IActionResult SubscriptionMeteredDetail(string subscriptionId)
         {
+
+            if(subscriptionId == null)
+            {
+                throw new ArgumentNullException(nameof(subscriptionId));
+            }
+
             var subscriptionDetail = new SubscriptionViewModel();
 
-            this.logger.LogInformation("Scheduler Controller / SubscriptionLogDetail : subscriptionId: {0}", JsonSerializer.Serialize(subscriptionId));
+            this.logger.LogInformation("Scheduler Controller / SubscriptionLogDetail : subscriptionId: {Id}", JsonSerializer.Serialize(subscriptionId));
 
             try
             {
@@ -277,7 +275,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                     this.TempData["ShowWelcomeScreen"] = "True";
 
                     subscriptionDetail = this.subscriptionService.GetSubscriptionsViewById(subscriptionId);
-                    subscriptionDetail.meteringUsageResultModels = this.usageResultService.GetUsageBySubscription(subscriptionId.Replace("|", "/"));
+                    subscriptionDetail.meteringUsageResultModels = this.usageResultService.GetUsageBySubscription(subscriptionId.Replace("|", "/",StringComparison.OrdinalIgnoreCase));
                 }
                 else
                 {
@@ -286,13 +284,14 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
             catch (Exception ex)
             {
-                this.logger.LogError("Message:{0} :: {1}   ", ex.Message, ex.InnerException);
+                this.logger.LogError("Message:{Message} :: {InnerException}   ", ex.Message, ex.InnerException);
                 subscriptionDetail.ErrorMessage = ex.Message;
+                throw;
             }
             return this.View(subscriptionDetail);
 
         }
-
+        [HttpGet]
         public IActionResult GetSubscriptionData(string id)
         {
             var allSubscriptionDetails = this.subscriptionService.GetActiveSubscriptionsWithMeteredPlan();
@@ -303,7 +302,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                 var getAllDimensions = selectSubscription.Dimension.Split('|');
                 if (getAllDimensions != null)
                 {
-                    List<SelectListItem> selectedList = new List<SelectListItem>();
+                    List<SelectListItem> selectedList = new();
                     foreach (var item in getAllDimensions)
                     {
                         selectedList.Add(new SelectListItem()

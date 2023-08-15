@@ -11,10 +11,6 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         private readonly CosmosDbContext context;
 
-        /// <summary>
-        /// The disposed.
-        /// </summary>
-        private bool disposed = false;
 
 
         public UsageResultRepository(CosmosDbContext context)
@@ -39,7 +35,7 @@ namespace ManagedApplicationScheduler.DataAccess.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public UsageResult Get(string id)
+        public UsageResult? Get(string id)
         {
             return this.context.UsageResult.Where(s => s.id == id).FirstOrDefault();
         }

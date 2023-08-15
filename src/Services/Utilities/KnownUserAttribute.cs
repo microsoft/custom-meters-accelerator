@@ -21,7 +21,7 @@ public class KnownUserAttribute : AuthorizeAttribute, IAuthorizationFilter
     /// The known users repository.
     /// </summary>
 
-    private KnownUsersModel knownUsersList;
+    private readonly KnownUsersModel knownUsersList;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="KnownUserAttribute" /> class.
@@ -45,24 +45,48 @@ public class KnownUserAttribute : AuthorizeAttribute, IAuthorizationFilter
         var isKnownuser = false;
         string email = string.Empty;
 
-        if (context.HttpContext != null && context.HttpContext.User.Claims.Count() > 0)
+        if (context.HttpContext != null && context.HttpContext.User.Claims.Any())
         {
             email = context.HttpContext.User?.Claims?.Where(s => s.Type == ClaimConstants.CLAIM_EMAILADDRESS)?.FirstOrDefault()?.Value;
-            isKnownuser = knownUsersList.KnownUsers.Contains(email);
+
+            if(email == null)
+            {
+                var claimlist = context.HttpContext.User?.Claims?.Where(s => s.Type == ClaimConstants.CLAIM_NAME)?.ToList();
+                foreach(var claim in claimlist)
+                {
+                    if (claim.Value.Contains("@", System.StringComparison.Ordinal))
+                    {
+                        email = claim.Value;
+                    }
+                }
+            }
+            //Attempt again with Name. In some cases the claim will have the email under name
+            
+
+
+
+            if (email != null)
+            {
+                isKnownuser = knownUsersList.KnownUsers.Contains(email);
+            }
 
             if (!isKnownuser)
             {
-                var routeValues = new RouteValueDictionary();
-                routeValues["controller"] = "Account";
-                routeValues["action"] = "AccessDenied";
+                var routeValues = new RouteValueDictionary
+                {
+                    ["controller"] = "Account",
+                    ["action"] = "AccessDenied"
+                };
                 context.Result = new RedirectToRouteResult(routeValues);
             }
         }
         else
         {
-            var routeValues = new RouteValueDictionary();
-            routeValues["controller"] = "Account";
-            routeValues["action"] = "SignIn";
+            var routeValues = new RouteValueDictionary
+            {
+                ["controller"] = "Account",
+                ["action"] = "SignIn"
+            };
             context.Result = new RedirectToRouteResult(routeValues);
         }
     }

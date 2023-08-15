@@ -76,6 +76,9 @@ public class Startup
             Signature = this.Configuration["Signature"]
             
         };
+        if (!config.AdAuthenticationEndPoint.EndsWith("/",StringComparison.OrdinalIgnoreCase))
+            config.AdAuthenticationEndPoint = config.AdAuthenticationEndPoint + "/";
+
         var knownUsers = new KnownUsersModel()
         {
             KnownUsers = this.Configuration["KnownUsers"],
@@ -100,7 +103,7 @@ public class Startup
                 options.SignedOutRedirectUri = config.SignedOutRedirectUri;
                 options.TokenValidationParameters.NameClaimType = "name";
                 options.TokenValidationParameters.NameClaimType = ClaimConstants.CLAIM_NAME; //This does not seem to take effect on User.Identity. See Note in CustomClaimsTransformation.cs
-                options.TokenValidationParameters.ValidateIssuer = false;
+               options.TokenValidationParameters.ValidateIssuer = false;
             })
             .AddCookie();
 
