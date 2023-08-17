@@ -66,18 +66,5 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
             }
         }
 
-        protected void OnException(ExceptionContext filterContext)
-        {
-            if(filterContext == null)
-            {
-                throw  new ArgumentNullException(nameof(filterContext)); 
-            }
-            filterContext.ExceptionHandled = true;
-
-            filterContext.Result = new ViewResult
-            {
-                ViewName = "~/Views/Shared/Error.cshtml"
-            };
-        }
     }
 }
