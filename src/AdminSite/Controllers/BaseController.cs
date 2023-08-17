@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System;
 
 namespace ManagedApplicationScheduler.AdminSite.Controllers
 {
@@ -13,6 +15,7 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
     ///  Sets a BaseController.
     /// </summary>
     /// <seealso cref="Microsoft.AspNetCore.Mvc.Controller" />
+    [ServiceFilter(typeof(ExceptionHandlerAttribute))]
     public class BaseController : Controller
     {
     
@@ -61,6 +64,20 @@ namespace ManagedApplicationScheduler.AdminSite.Controllers
                 }
                 
             }
+        }
+
+        protected void OnException(ExceptionContext filterContext)
+        {
+            if(filterContext == null)
+            {
+                throw  new ArgumentNullException(nameof(filterContext)); 
+            }
+            filterContext.ExceptionHandled = true;
+
+            filterContext.Result = new ViewResult
+            {
+                ViewName = "~/Views/Shared/Error.cshtml"
+            };
         }
     }
 }
